@@ -1,0 +1,13 @@
+RAPTOR: Recursive Abstractive Processing for Tree-Organized Retrieval
+
+Introduction
+Retrieval-Augmented Generation (RAG) has become a popular approach for enhancing large language models with external knowledge. However, traditional RAG systems treat documents as flat collections of chunks, ignoring the inherent hierarchical structure of documents.
+
+Methodology
+Our approach, RAPTOR, introduces a novel method for document indexing and retrieval. We cluster related chunks using Gaussian Mixture Models, generate abstractive summaries at multiple levels, and build a tree structure that captures document semantics.
+
+Results
+Experiments show that RAPTOR outperforms traditional RAG by 25-40% on complex queries. The hierarchical structure allows for better contextual understanding and multi-hop reasoning.
+
+Conclusion
+RAPTOR provides a significant improvement over flat RAG systems by capturing document structure through recursive clustering and summarization.

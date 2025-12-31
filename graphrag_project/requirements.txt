@@ -1,0 +1,27 @@
+# GraphRAG requirements for Weeks 3-4
+# Install with: pip install -r requirements.txt
+
+# Core Neo4j driver
+neo4j>=5.0.0
+
+# Visualization libraries
+networkx>=3.0
+matplotlib>=3.7.0
+pyvis>=0.3.0
+plotly>=5.15.0
+
+# Data handling
+pandas>=2.0.0
+numpy>=1.24.0
+
+# For entity extraction (Week 2)
+openai>=1.0.0
+tiktoken>=0.5.0
+
+# For graph retrieval (Week 4)
+sentence-transformers>=2.2.0
+scikit-learn>=1.3.0
+
+# Utilities
+python-dotenv>=1.0.0
+tqdm>=4.65.0

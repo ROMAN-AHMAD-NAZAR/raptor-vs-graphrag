@@ -1,0 +1,9 @@
+langchain
+qdrant-client
+sentence-transformers
+umap-learn
+hdbscan
+transformers
+torch
+accelerate
+bitsandbytes

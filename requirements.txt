@@ -1,0 +1,21 @@
+# Week 1 dependencies
+PyPDF2==3.0.1
+unstructured[pdf]==0.10.30
+langchain==0.1.0
+nltk==3.8.1
+
+# Week 2 dependencies
+sentence-transformers==2.2.2
+numpy==1.24.3
+torch==2.1.0
+scikit-learn==1.3.2
+faiss-cpu==1.7.4
+
+# Week 3 dependencies
+umap-learn==0.5.5
+scikit-learn==1.3.2
+matplotlib==3.8.2
+
+# Utilities
+tqdm==4.66.1
+pandas==2.1.4

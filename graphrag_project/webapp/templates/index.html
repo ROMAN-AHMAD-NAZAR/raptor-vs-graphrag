@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RAPTOR vs GraphRAG Comparison</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-diagram-project"></i>
+                    <span>RAG Comparison Tool</span>
+                </div>
+                <div class="header-stats" id="headerStats">
+                    <div class="stat-badge raptor">
+                        <span class="label">RAPTOR Wins</span>
+                        <span class="value" id="raptorWins">0</span>
+                    </div>
+                    <div class="stat-badge graphrag">
+                        <span class="label">GraphRAG Wins</span>
+                        <span class="value" id="graphragWins">0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Document Input Section -->
+            <section class="section document-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-file-alt"></i> Document Input</h2>
+                    <button class="btn btn-secondary" id="loadSampleBtn">
+                        <i class="fas fa-flask"></i> Load Sample Document
+                    </button>
+                </div>
+                
+                <div class="input-group">
+                    <textarea 
+                        id="documentInput" 
+                        placeholder="Paste your document text here or upload a file..."
+                        rows="6"
+                    ></textarea>
+                    <div class="input-actions">
+                        <div class="file-upload">
+                            <input type="file" id="fileInput" accept=".txt,.md,.pdf,.doc,.docx,.text,.markdown">
+                            <label for="fileInput" class="btn btn-outline">
+                                <i class="fas fa-upload"></i> Upload File
+                            </label>
+                        </div>
+                        <button class="btn btn-primary" id="indexBtn">
+                            <i class="fas fa-database"></i> Index Document
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="index-status" id="indexStatus">
+                    <div class="status-indicator not-indexed">
+                        <i class="fas fa-circle"></i> No document indexed
+                    </div>
+                </div>
+            </section>
+
+            <!-- Query Section -->
+            <section class="section query-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-search"></i> Query Input</h2>
+                    <button class="btn btn-secondary" id="loadSampleQueriesBtn">
+                        <i class="fas fa-list"></i> Sample Queries
+                    </button>
+                </div>
+                
+                <div class="query-input-group">
+                    <input 
+                        type="text" 
+                        id="queryInput" 
+                        placeholder="Enter your query..."
+                    >
+                    <select id="topKSelect">
+                        <option value="3">Top 3</option>
+                        <option value="5" selected>Top 5</option>
+                        <option value="10">Top 10</option>
+                    </select>
+                    <button class="btn btn-primary" id="compareBtn">
+                        <i class="fas fa-balance-scale"></i> Compare
+                    </button>
+                </div>
+                
+                <div class="sample-queries-dropdown" id="sampleQueriesDropdown">
+                    <ul id="sampleQueriesList"></ul>
+                </div>
+            </section>
+
+            <!-- Results Section -->
+            <section class="section results-section" id="resultsSection" style="display: none;">
+                <div class="section-header">
+                    <h2><i class="fas fa-chart-bar"></i> Comparison Results</h2>
+                    <span class="query-time" id="totalQueryTime"></span>
+                </div>
+
+                <!-- Metrics Overview -->
+                <div class="metrics-overview">
+                    <div class="winner-banner" id="winnerBanner">
+                        <div class="winner-icon">
+                            <i class="fas fa-trophy"></i>
+                        </div>
+                        <div class="winner-text">
+                            <span class="winner-label">Winner</span>
+                            <span class="winner-name" id="winnerName"></span>
+                        </div>
+                    </div>
+                    
+                    <div class="metrics-cards">
+                        <!-- RAPTOR Metrics -->
+                        <div class="metrics-card raptor">
+                            <div class="card-header">
+                                <h3><i class="fas fa-tree"></i> RAPTOR</h3>
+                                <span class="card-badge" id="raptorBadge"></span>
+                            </div>
+                            <div class="metrics-grid">
+                                <div class="metric">
+                                    <span class="metric-label">Avg Score</span>
+                                    <span class="metric-value" id="raptorAvgScore">-</span>
+                                </div>
+                                <div class="metric">
+                                    <span class="metric-label">Max Score</span>
+                                    <span class="metric-value" id="raptorMaxScore">-</span>
+                                </div>
+                                <div class="metric">
+                                    <span class="metric-label">Results</span>
+                                    <span class="metric-value" id="raptorNumResults">-</span>
+                                </div>
+                                <div class="metric">
+                                    <span class="metric-label">Query Time</span>
+                                    <span class="metric-value" id="raptorQueryTime">-</span>
+                                </div>
+                                <div class="metric">
+                                    <span class="metric-label">Coverage</span>
+                                    <span class="metric-value" id="raptorCoverage">-</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- GraphRAG Metrics -->
+                        <div class="metrics-card graphrag">
+                            <div class="card-header">
+                                <h3><i class="fas fa-project-diagram"></i> GraphRAG</h3>
+                                <span class="card-badge" id="graphragBadge"></span>
+                            </div>
+                            <div class="metrics-grid">
+                                <div class="metric">
+                                    <span class="metric-label">Avg Score</span>
+                                    <span class="metric-value" id="graphragAvgScore">-</span>
+                                </div>
+                                <div class="metric">
+                                    <span class="metric-label">Max Score</span>
+                                    <span class="metric-value" id="graphragMaxScore">-</span>
+                                </div>
+                                <div class="metric">
+                                    <span class="metric-label">Results</span>
+                                    <span class="metric-value" id="graphragNumResults">-</span>
+                                </div>
+                                <div class="metric">
+                                    <span class="metric-label">Query Time</span>
+                                    <span class="metric-value" id="graphragQueryTime">-</span>
+                                </div>
+                                <div class="metric">
+                                    <span class="metric-label">Coverage</span>
+                                    <span class="metric-value" id="graphragCoverage">-</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Score Comparison Chart -->
+                <div class="chart-container">
+                    <canvas id="comparisonChart"></canvas>
+                </div>
+
+                <!-- Results Comparison -->
+                <div class="results-comparison">
+                    <div class="results-column raptor">
+                        <h3><i class="fas fa-tree"></i> RAPTOR Results</h3>
+                        <div class="results-list" id="raptorResults"></div>
+                    </div>
+                    <div class="results-column graphrag">
+                        <h3><i class="fas fa-project-diagram"></i> GraphRAG Results</h3>
+                        <div class="results-list" id="graphragResults"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- History Section -->
+            <section class="section history-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-history"></i> Query History</h2>
+                    <button class="btn btn-outline btn-small" id="clearHistoryBtn">
+                        <i class="fas fa-trash"></i> Clear All
+                    </button>
+                </div>
+                <div class="history-list" id="historyList">
+                    <p class="no-history">No queries yet. Start comparing!</p>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+        <span>Processing...</span>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
